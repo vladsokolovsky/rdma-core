@@ -351,7 +351,7 @@ rm -rf %{buildroot}/%{_sbindir}/srp_daemon.sh
 %doc %{_docdir}/%{name}-%{version}/tag_matching.md
 %{_udevrulesdir}/../rdma_rename
 %{_udevrulesdir}/60-rdma-persistent-naming.rules
-%config(noreplace) %{_sysconfdir}/modprobe.d/mlx4.conf
+%config(noreplace) %{_sysconfdir}/modprobe.d/ofed_mlx4.conf
 %{_sysconfdir}/udev/rules.d/70-persistent-ipoib.rules
 %{_udevrulesdir}/75-rdma-description.rules
 %{_udevrulesdir}/90-rdma-umad.rules

@@ -1,4 +1,4 @@
-etc/modprobe.d/mlx4.conf
+etc/modprobe.d/ofed_mlx4.conf
 etc/udev/rules.d/70-persistent-ipoib.rules
 lib/systemd/system/rdma-ndd.service
 lib/udev/rules.d/60-rdma-ndd.rules
