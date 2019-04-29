@@ -599,6 +599,7 @@ struct dr_devx_caps {
 	bool				fdb_sw_owner;
 	uint32_t			num_vports;
 	struct dr_devx_vport_cap	*vports_caps;
+	struct dr_devx_vport_cap	esw_manager_vport_caps;
 };
 
 struct dr_domain_rx_tx {
