@@ -1,0 +1,16 @@
+name=libmlx4_bugs; type=bug; upstream_status=NA;
+name=ofed_scripts; type=scripts; upstream_status=ignore;
+name=libibverbs_bugs; type=bug; upstream_status=NA;
+name=rebase; type=kernel; upstream_status=ignore;
+name=librdmacm_bugs; type=bug; upstream_status=NA;
+name=packaging; type=kernel; upstream_status=NA;
+name=libmlx5_bugs; type=bug; upstream_status=NA;
+name=flow_counters; type=feature; upstream_status=in_progress;
+name=scatter_fcs; type=feature; upstream_status=in_progress;
+name=libmlx5_mini_cqe; type=feature; upstream_status=in_progress;
+name=mlx5_eio_cleanup; type=features; upstream_status=NA;
+name=mlx5_flow_actions; type=features; upstream_status=in_progress;
+name=devx; type=features; upstream_status=in_progress;
+name=impl_odp; type=features; upstream_status=accepted;
+name=sw_steering; type=features; upstream_status=in_progress;
+name=package_scripts; type=bug; upstream_status=in_progress;
