@@ -1,0 +1,12 @@
+sep=;
+Change-Id=I970127e702e62bee158ff69bc70e003ca11cdb52; subject=mlx5: Fix man page of mlx5dv_create_flow_action_modify_header(); feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=Id43c5f43df61cd3ec162a9168f8798d8c5cc63b9; subject=mlx5: Set devx object information; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I0d29b52a5fc6e63d0ffb7896a759eb4c9662a925; subject=mlx5: Expose DV APIs for direct rule managing; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I6113948d932ca6f5e20c6753f26f14590007a228; subject=mlx5: Add the internal header file; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I2bbeac3201fbc644dd20904246a953fe8ddb3654; subject=mlx5: Add direct rule utilities over DEVX; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I41f99ed2ba029cc80d4a016666be1f66a152cfa3; subject=mlx5: ICM pool memory allocator; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I0e6b10403e90ff0dab6895b6670e6a3d82e07d0f; subject=mlx5: Expose steering domain functionality; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I028ce4dd4635d5fe47da01362ea53817656c458d; subject=mlx5: Expose steering table functionality; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I3f493b64ce4e6c31128da88e8dad22cbc1b0123d; subject=mlx5: Expose steering matcher functionality; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=Ie2a8e03b1efb1e358b74307583d21429ad4da9ec; subject=mlx5: Expose steering action functionality; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I63289dc61188e12088ad9d16889d1e48e68c93e6; subject=mlx5: Expose the direct rules functionality to applications; feature=sw_steering; upstream_status=in_progress; general=;
