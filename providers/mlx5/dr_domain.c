@@ -189,10 +189,6 @@ static int dr_domain_caps_init(struct ibv_context *ctx,
 	if (ret)
 		return ret;
 
-	/* Non FDB type is supported only over root table */
-	if (dmn->type != MLX5DV_DR_DOMAIN_TYPE_FDB)
-		return 0;
-
 	ret = dr_devx_query_device(ctx, &dmn->info.caps);
 	if (ret)
 		/* Ignore devx query failure to allow steering on root level

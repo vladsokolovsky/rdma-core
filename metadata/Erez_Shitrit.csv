@@ -3,3 +3,4 @@ Change-Id=I762d690d3030e7a315bdcd3c5a7db1d64bdb88d6; subject=verbs: Extend async
 Change-Id=Icd29b2d2cc7f6bbc7e9a56198ff3e6a2d731f63c; subject=mlx5: Expose an internal API to issue RDMA operations for direct rules; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=I0b79c00e78b7ae567bd1dffad8a7dfe27ae26b2c; subject=mlx5: Add Steering entry (STE) utilities; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=Ifa4ab2cc17e9b5ca4f80272e7bae0f3bad06d2f6; subject=mlx5: Expose steering rule functionality; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I59a86b6d4195f7e3b8aef5d0473ba47466901690; subject=mlx5: Enable sw-steering over nic tables; feature=sw_steering; upstream_status=in_progress; general=;
