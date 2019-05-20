@@ -18,7 +18,6 @@ libmlx5.so.1 ibverbs-providers #MINVER#
  MLX5_1.8@MLX5_1.8 22
  MLX5_1.9@MLX5_1.9 23
  MLX5_1.10@MLX5_1.10 24
- MLX5_OFED_4.6@MLX5_OFED_4.6 24
  mlx5dv_init_obj@MLX5_1.0 13
  mlx5dv_init_obj@MLX5_1.2 15
  mlx5dv_query_device@MLX5_1.0 13
@@ -54,28 +53,6 @@ libmlx5.so.1 ibverbs-providers #MINVER#
  mlx5dv_devx_srq_query@MLX5_1.8 22
  mlx5dv_devx_wq_modify@MLX5_1.8 22
  mlx5dv_devx_wq_query@MLX5_1.8 22
- mlx5dv_dr_create_action_dest_flow_table@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_dest_ibv_qp@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_dest_vport@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_devx_counter@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_drop@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_flow_meter@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_modify_header@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_packet_reformat@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_tag@MLX5_OFED_4.6 24
- mlx5dv_dr_create_ft@MLX5_OFED_4.6 24
- mlx5dv_dr_create_matcher@MLX5_OFED_4.6 24
- mlx5dv_dr_create_ns@MLX5_OFED_4.6 24
- mlx5dv_dr_create_rule@MLX5_OFED_4.6 24
- mlx5dv_dr_destroy_action@MLX5_OFED_4.6 24
- mlx5dv_dr_destroy_ft@MLX5_OFED_4.6 24
- mlx5dv_dr_destroy_matcher@MLX5_OFED_4.6 24
- mlx5dv_dr_destroy_ns@MLX5_OFED_4.6 24
- mlx5dv_dr_destroy_rule@MLX5_OFED_4.6 24
- mlx5dv_dr_modify_action_flow_meter@MLX5_OFED_4.6 24
- mlx5dv_dr_sync_domain@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_pop_vlan@MLX5_OFED_4.6 24
- mlx5dv_dr_create_action_push_vlan@MLX5_OFED_4.6 24
  mlx5dv_is_supported@MLX5_1.8 22
  mlx5dv_devx_create_cmd_comp@MLX5_1.9 23
  mlx5dv_devx_destroy_cmd_comp@MLX5_1.9 23
