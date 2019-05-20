@@ -4,3 +4,4 @@ Change-Id=I1f015fec82335a6cd728865d56a1c289e952325f; subject=Added MLNX_OFED inf
 Change-Id=Ie164227eab68d44ceb06e94ed0ed06561a59d02d; subject=Updated packaging files  ; feature=rebase; upstream_status=ignore; general=;
 Change-Id=I52dc504cff6604bed74a64d99bb7b1e046ea5cd6; subject=debian: Add rdma rename files - redundent for next rebase; feature=ofed_scripts; upstream_status=ignore; general=;
 Change-Id=Iefca1cd2a85177758221faf03d70d92a6b036e57; subject=metadata: Initial MD  ; feature=ofed_scripts; upstream_status=ignore; general=;
+Change-Id=I732837e92b0baaba66bab45e34cfc8dc7b98cb66; subject=debian change debian version; feature=ofed_scripts; upstream_status=ignore; general=;

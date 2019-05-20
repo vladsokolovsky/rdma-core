@@ -1,4 +1,4 @@
-rdma-core (46mlnx1-1) unstable; urgency=low
+rdma-core (46mlnx2-1) unstable; urgency=low
 
   * New MLNX_OFED version.
 
