@@ -144,6 +144,10 @@ set(DISTRO_FLAVOUR "None" CACHE
   STRING "Flavour of distribution to install for. This primarily impacts the init.d scripts installed.")
 
 #-------------------------
+# Add MLNX_OFED compat headers for build against old kernels
+execute_process(COMMAND ${CMAKE_COMMAND} -E copy_directory "${CMAKE_SOURCE_DIR}/mlnx_compat_includes" "${BUILD_INCLUDE}")
+
+#-------------------------
 # Load CMake components
 set(BUILDLIB "${CMAKE_SOURCE_DIR}/buildlib")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${BUILDLIB}")
@@ -185,10 +189,6 @@ RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WMISSING_DECLARATIONS "-Wmissing-declarati
 RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WWRITE_STRINGS "-Wwrite-strings")
 RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WFORMAT_2 "-Wformat=2")
 RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WCAST_FUNCTION "-Wcast-function-type")
-RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WFORMAT_NONLITERAL "-Wformat-nonliteral")
-RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WREDUNDANT_DECLS "-Wredundant-decls")
-RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WDATE_TIME "-Wdate-time")
-RDMA_AddOptCFlag(CMAKE_C_FLAGS HAVE_C_WNESTED_EXTERNS "-Wnested-externs")
 
 # At some point after 4.4 gcc fixed shadow to ignore function vs variable
 # conflicts
@@ -366,12 +366,12 @@ endif()
 
 # Look for Python. We prefer some variant of python 3 if the system has it.
 FIND_PACKAGE(PythonInterp 3 QUIET)
-if (PythonInterp_FOUND)
+if (${PythonInterp_FOUND})
   # pyverbs can only use python3:
-  if (NO_PYVERBS)
-    set(CYTHON_EXECUTABLE "")
-  else()
+  if (NOT ${NO_PYVERBS})
     FIND_PACKAGE(cython)
+  else()
+    set(CYTHON_EXECUTABLE "")
   endif()
 else()
   # But we still must have python (be it 2) for the build process:
@@ -380,7 +380,6 @@ else()
 endif()
 
 # A cython & python-devel installation that matches our selected interpreter.
-
 if (CYTHON_EXECUTABLE)
  # cmake has really bad logic here, if PythonIterp has been run it tries to
  # find a matching -devel installation but will happily return a non-matching
@@ -580,24 +579,12 @@ add_subdirectory(librdmacm/man)
 
 # Providers
 if (HAVE_COHERENT_DMA)
-add_subdirectory(providers/bnxt_re)
-add_subdirectory(providers/cxgb3) # NO SPARSE
-add_subdirectory(providers/cxgb4) # NO SPARSE
-add_subdirectory(providers/hns)
-add_subdirectory(providers/i40iw) # NO SPARSE
 add_subdirectory(providers/mlx4)
 add_subdirectory(providers/mlx4/man)
 add_subdirectory(providers/mlx5)
 add_subdirectory(providers/mlx5/man)
-add_subdirectory(providers/mthca)
-add_subdirectory(providers/nes) # NO SPARSE
-add_subdirectory(providers/ocrdma)
-add_subdirectory(providers/qedr)
-add_subdirectory(providers/vmw_pvrdma)
 endif()
 
-add_subdirectory(providers/hfi1verbs)
-add_subdirectory(providers/ipathverbs)
 add_subdirectory(providers/rxe)
 add_subdirectory(providers/rxe/man)
 
@@ -606,13 +593,7 @@ if (CYTHON_EXECUTABLE)
 endif()
 
 # Binaries
-if (NOT NL_KIND EQUAL 0)
-  add_subdirectory(ibacm) # NO SPARSE
-endif()
-
-if (NOT NL_KIND EQUAL 0)
-  add_subdirectory(iwpmd)
-endif()
+add_subdirectory(ibacm) # NO SPARSE
 add_subdirectory(libibumad/tests)
 add_subdirectory(libibverbs/examples)
 add_subdirectory(librdmacm/examples)

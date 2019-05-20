@@ -5,20 +5,19 @@ Uploaders: Benjamin Drung <benjamin.drung@cloud.ionos.com>,
 Section: net
 Priority: optional
 Build-Depends: cmake (>= 2.8.11),
-               cython3,
+               cython3 (>= 0.25) | python,
                debhelper (>= 9),
                debhelper (>= 9.20160709) | dh-systemd,
                dpkg-dev (>= 1.17),
                libnl-3-dev,
                libnl-route-3-dev,
-               libsystemd-dev,
+# The libsystemd dependency is optional on older Ubuntus
+               libsystemd-dev | libnih1,
                libudev-dev,
-               ninja-build,
                pandoc,
                pkg-config,
-               python3-dev,
                valgrind [amd64 arm64 armhf i386 mips mips64el mipsel powerpc ppc64 ppc64el s390x]
-Standards-Version: 4.3.0
+Standards-Version: 4.2.1
 Vcs-Git: https://github.com/linux-rdma/rdma-core.git
 Vcs-Browser: https://github.com/linux-rdma/rdma-core
 Homepage: https://github.com/linux-rdma/rdma-core
@@ -42,9 +41,6 @@ Description: RDMA core userspace infrastructure and documentation
   - The rdma-ndd daemon which watches for RDMA device changes and/or hostname
     changes and updates the Node Description of the RDMA devices based on
     those changes.
-  - The iWARP Port Mapper Daemon (iwpmd) which provides a kernel support
-    service in userspace for iWARP drivers to claim TCP ports through the
-    standard socket interface.
 
 Package: ibacm
 Architecture: linux-any
@@ -65,18 +61,18 @@ Architecture: linux-any
 Multi-Arch: same
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Provides: libcxgb3-1, libipathverbs1, libmlx4-1, libmlx5-1, libmthca1, libnes1
-Replaces: libcxgb3-1 (<< 15),
-          libipathverbs1 (<< 15),
-          libmlx4-1 (<< 15),
-          libmlx5-1 (<< 15),
-          libmthca1 (<< 15),
-          libnes1 (<< 15)
-Breaks: libcxgb3-1 (<< 15),
-        libipathverbs1 (<< 15),
-        libmlx4-1 (<< 15),
-        libmlx5-1 (<< 15),
-        libmthca1 (<< 15),
-        libnes1 (<< 15)
+Replaces: libcxgb3-1,
+          libipathverbs1,
+          libmlx4-1,
+          libmlx5-1,
+          libmthca1,
+          libnes1
+Breaks: libcxgb3-1,
+        libipathverbs1,
+        libmlx4-1,
+        libmlx5-1,
+        libmthca1,
+        libnes1
 Description: User space provider drivers for libibverbs
  libibverbs is a library that allows userspace processes to use RDMA
  "verbs" as described in the InfiniBand Architecture Specification and
@@ -90,21 +86,9 @@ Description: User space provider drivers for libibverbs
  A RDMA driver consists of a kernel portion and a user space portion.
  This package contains the user space verbs drivers:
  .
-  - bnxt_re: Broadcom NetXtreme-E RoCE HCAs
-  - cxgb3: Chelsio T3 iWARP HCAs
-  - cxgb4: Chelsio T4 iWARP HCAs
-  - hfi1verbs: Intel Omni-Path HFI
-  - hns: HiSilicon Hip06 SoC
-  - i40iw: Intel Ethernet Connection X722 RDMA
-  - ipathverbs: QLogic InfiniPath HCAs
   - mlx4: Mellanox ConnectX-3 InfiniBand HCAs
   - mlx5: Mellanox Connect-IB/X-4+ InfiniBand HCAs
-  - mthca: Mellanox InfiniBand HCAs
-  - nes: Intel NetEffect NE020-based iWARP adapters
-  - ocrdma: Emulex OneConnect RDMA/RoCE device
-  - qedr: QLogic QL4xxx RoCE HCAs
   - rxe: A software implementation of the RoCE protocol
-  - vmw_pvrdma: VMware paravirtual RDMA device
 
 Package: ibverbs-utils
 Architecture: linux-any

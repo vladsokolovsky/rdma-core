@@ -1,4 +1,10 @@
-rdma-core (24.0-1) unstable; urgency=medium
+rdma-core (46mlnx1-1) unstable; urgency=low
+
+  * New MLNX_OFED version.
+
+ -- Alaa Hleihel <alaa@mellanox.com>  Wed, 26 Dec 2018 21:22:01 +0200
+
+rdma-core (22.0-1) unstable; urgency=medium
 
   * New upstream release.
 
