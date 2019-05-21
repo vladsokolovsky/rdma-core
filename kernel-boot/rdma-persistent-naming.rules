@@ -24,4 +24,4 @@
 #   Device type = RoCE
 #   mlx5_0 -> rocex525400c0fe123455
 #
-ACTION=="add", SUBSYSTEM=="infiniband", PROGRAM="rdma_rename %k NAME_FALLBACK"
+ACTION=="add", SUBSYSTEM=="infiniband", PROGRAM="rdma_rename %k NAME_KERNEL"

@@ -6,3 +6,4 @@ Change-Id=I52dc504cff6604bed74a64d99bb7b1e046ea5cd6; subject=debian: Add rdma re
 Change-Id=Iefca1cd2a85177758221faf03d70d92a6b036e57; subject=metadata: Initial MD  ; feature=ofed_scripts; upstream_status=ignore; general=;
 Change-Id=I732837e92b0baaba66bab45e34cfc8dc7b98cb66; subject=debian change debian version; feature=ofed_scripts; upstream_status=ignore; general=;
 Change-Id=I2c89b13048591fedd147fe80c8fa63724e97f7bc; subject=Update Metadata; feature=ofed_scripts; upstream_status=ignore; general=;
+Change-Id=I42539ef163a0a72c22119d61d4212f36274192f7; subject=kernel-boot: make persistent names use NAME_KERNEL instead of NAME_FALLBACK; feature=persistent_names; upstream_status=NA; general=;
