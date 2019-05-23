@@ -1,0 +1,2 @@
+sep=;
+Change-Id=I33a1d72467ca05d805d6c1c76d5a0acdcb986342; subject=spec: Don't require pandoc on Fedora; feature=packaging; upstream_status=ignore; general=;
