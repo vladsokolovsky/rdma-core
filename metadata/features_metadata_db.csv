@@ -15,3 +15,4 @@ name=impl_odp; type=features; upstream_status=accepted;
 name=sw_steering; type=features; upstream_status=in_progress;
 name=package_scripts; type=bug; upstream_status=in_progress;
 name=persistent_names; type=bug; upstream_status=in_progress;
+name=mlx5_sfs; type=features; upstream_status=in_progress;

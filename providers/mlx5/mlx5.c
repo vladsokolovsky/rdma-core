@@ -1390,11 +1390,37 @@ static struct verbs_device *mlx5_device_alloc(struct verbs_sysfs_dev *sysfs_dev)
 	return &dev->verbs_dev;
 }
 
+static bool mlx5_match_device(struct verbs_sysfs_dev *sysfs_dev)
+{
+	char module_name[PATH_MAX];
+	char *module_path = NULL;
+	bool found = false;
+	int ret;
+
+	ret = asprintf(&module_path, "%s/device/driver", sysfs_dev->sysfs_path);
+	if (ret <= 0)
+		return true;
+
+	memset(&module_name[0], 0, sizeof(module_name));
+	ret = readlink(module_path, &module_name[0], sizeof(module_name));
+	if (ret <= 0) {
+		printf("%s errno = %d\n", __func__, errno);
+		goto done;
+	}
+	if (strstr(module_name, "mlx5_core"))
+		found = true;
+
+done:
+	free(module_path);
+	return found;
+}
+
 static const struct verbs_device_ops mlx5_dev_ops = {
 	.name = "mlx5",
 	.match_min_abi_version = MLX5_UVERBS_MIN_ABI_VERSION,
 	.match_max_abi_version = MLX5_UVERBS_MAX_ABI_VERSION,
 	.match_table = hca_table,
+	.match_device = mlx5_match_device,
 	.alloc_device = mlx5_device_alloc,
 	.uninit_device = mlx5_uninit_device,
 	.alloc_context = mlx5_alloc_context,
