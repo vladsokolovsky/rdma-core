@@ -135,6 +135,7 @@ enum dr_ste_tunl_action {
 	DR_STE_TUNL_ACTION_ENABLE	= 1,
 	DR_STE_TUNL_ACTION_DECAP	= 2,
 	DR_STE_TUNL_ACTION_L3_DECAP	= 3,
+	DR_STE_TUNL_ACTION_POP_VLAN	= 4,
 };
 
 enum dr_ste_action_type {
@@ -227,6 +228,12 @@ void dr_ste_set_rx_decap(uint8_t *hw_ste_p)
 {
 	DR_STE_SET(rx_steering_mult, hw_ste_p, tunneling_action,
 		   DR_STE_TUNL_ACTION_DECAP);
+}
+
+void dr_ste_set_rx_pop_vlan(uint8_t *hw_ste_p)
+{
+	DR_STE_SET(rx_steering_mult, hw_ste_p, tunneling_action,
+		   DR_STE_TUNL_ACTION_POP_VLAN);
 }
 
 void dr_ste_set_rx_decap_l3(uint8_t *hw_ste_p, bool vlan)

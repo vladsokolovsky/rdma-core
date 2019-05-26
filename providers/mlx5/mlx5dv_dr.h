@@ -41,7 +41,7 @@
 #include "mlx5.h"
 
 #define DR_RULE_MAX_STES	17
-#define DR_ACTION_MAX_STES	3
+#define DR_ACTION_MAX_STES	5
 #define WIRE_PORT		0xFFFF
 #define DR_STE_SVLAN		0x1
 #define DR_STE_CVLAN		0x2
@@ -181,6 +181,7 @@ enum dr_action_type {
 	DR_ACTION_TYP_MODIFY_HDR,
 	DR_ACTION_TYP_METER,
 	DR_ACTION_TYP_VPORT,
+	DR_ACTION_TYP_POP_VLAN,
 	DR_ACTION_TYP_MAX,
 };
 
@@ -314,6 +315,7 @@ void dr_ste_set_counter_id(uint8_t *hw_ste_p, uint32_t ctr_id);
 void dr_ste_set_tx_encap(void *hw_ste_p, uint32_t reformat_id, int size, bool encap_l3);
 void dr_ste_set_rx_decap(uint8_t *hw_ste_p);
 void dr_ste_set_rx_decap_l3(uint8_t *hw_ste_p, bool vlan);
+void dr_ste_set_rx_pop_vlan(uint8_t *hw_ste_p);
 void dr_ste_set_entry_type(uint8_t *hw_ste_p, uint8_t entry_type);
 uint8_t dr_ste_get_entry_type(uint8_t *hw_ste_p);
 void dr_ste_set_rewrite_actions(uint8_t *hw_ste_p, uint16_t num_of_actions,

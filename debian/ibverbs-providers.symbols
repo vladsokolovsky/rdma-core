@@ -82,4 +82,4 @@ libmlx5.so.1 ibverbs-providers #MINVER#
  mlx5dv_qp_ex_from_ibv_qp_ex@MLX5_1.10 24
  mlx5dv_dr_action_create_flow_meter@MLX5_OFED_4.6.3 24
  mlx5dv_dr_action_modify_flow_meter@MLX5_OFED_4.6.3 24
-
+ mlx5dv_dr_action_create_pop_vlan@MLX5_OFED_4.6.3 24

@@ -49,6 +49,7 @@ enum dr_action_valid_state {
 	DR_ACTION_STATE_NO_ACTION,
 	DR_ACTION_STATE_REFORMAT,
 	DR_ACTION_STATE_MODIFY_HDR,
+	DR_ACTION_STATE_MODIFY_VLAN,
 	DR_ACTION_STATE_NON_TERM,
 	DR_ACTION_STATE_TERM,
 	DR_ACTION_STATE_MAX,
@@ -68,6 +69,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_TNL_L2_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_TNL_L3_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 		},
 		[DR_ACTION_STATE_REFORMAT] = {
 			[DR_ACTION_TYP_QP]		= DR_ACTION_STATE_TERM,
@@ -76,6 +78,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 		},
 		[DR_ACTION_STATE_MODIFY_HDR] = {
 			[DR_ACTION_TYP_QP]		= DR_ACTION_STATE_TERM,
@@ -83,6 +86,15 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_TAG]		= DR_ACTION_STATE_MODIFY_HDR,
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_HDR,
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
+		},
+		[DR_ACTION_STATE_MODIFY_VLAN] = {
+			[DR_ACTION_TYP_QP]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_FT]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_TAG]		= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
 		},
 		[DR_ACTION_STATE_NON_TERM] = {
 			[DR_ACTION_TYP_DROP]		= DR_ACTION_STATE_TERM,
@@ -94,6 +106,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_TNL_L2_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_TNL_L3_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 		},
 		[DR_ACTION_STATE_TERM] = {
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_TERM,
@@ -143,6 +156,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_TNL_L2_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_TNL_L3_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_REFORMAT] = {
@@ -150,6 +164,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_MODIFY_HDR] = {
@@ -157,6 +172,14 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_HDR,
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
+		},
+		[DR_ACTION_STATE_MODIFY_VLAN] = {
+			[DR_ACTION_TYP_FT]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
 		},
 		[DR_ACTION_STATE_NON_TERM] = {
 			[DR_ACTION_TYP_DROP]		= DR_ACTION_STATE_TERM,
@@ -166,6 +189,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_TNL_L2_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_TNL_L3_TO_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_POP_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_TERM] = {
@@ -343,6 +367,11 @@ static const struct dr_action_modify_field_conv dr_action_conv_arr[] = {
 	},\
 };
 
+#define MAX_VLANS 2
+struct dr_action_vlan_info {
+	int count;
+};
+
 struct dr_action_apply_attr {
 	uint32_t	modify_index;
 	uint16_t	modify_actions;
@@ -355,6 +384,7 @@ struct dr_action_apply_attr {
 	uint16_t	gvmi;
 	uint32_t	reformat_id;
 	uint32_t	reformat_size;
+	struct dr_action_vlan_info vlans;
 };
 
 static enum mlx5dv_flow_action_packet_reformat_type
@@ -468,6 +498,22 @@ static void dr_actions_apply_rx(uint8_t *action_type_set,
 	if (action_type_set[DR_ACTION_TYP_TNL_L2_TO_L2])
 		dr_ste_set_rx_decap(last_ste);
 
+	if (action_type_set[DR_ACTION_TYP_POP_VLAN]) {
+		int i;
+
+		for (i = 0; i < attr->vlans.count; i++) {
+			if (i ||
+			    action_type_set[DR_ACTION_TYP_TNL_L2_TO_L2] ||
+			    action_type_set[DR_ACTION_TYP_TNL_L3_TO_L2])
+				dr_actions_init_next_ste(&last_ste,
+							 added_stes,
+							 DR_STE_TYPE_RX,
+							 attr->gvmi);
+
+			dr_ste_set_rx_pop_vlan(last_ste);
+		}
+	}
+
 	if (action_type_set[DR_ACTION_TYP_MODIFY_HDR]) {
 		if (dr_ste_get_entry_type(last_ste) == DR_STE_TYPE_MODIFY_PKT)
 			dr_actions_init_next_ste(&last_ste,
@@ -576,6 +622,7 @@ int dr_actions_build_ste_arr(struct mlx5dv_dr_matcher *matcher,
 
 	for (i = 0; i < num_actions; i++) {
 		struct mlx5dv_dr_action *action;
+		int max_actions_type = 1;
 		uint32_t action_type;
 
 		action = actions[i];
@@ -672,13 +719,18 @@ int dr_actions_build_ste_arr(struct mlx5dv_dr_matcher *matcher,
 				attr.final_icm_addr = action->vport.caps->icm_address_tx;
 			}
 			break;
+		case DR_ACTION_TYP_POP_VLAN:
+			max_actions_type = MAX_VLANS;
+			attr.vlans.count++;
+			break;
 		default:
 			goto out_invalid_arg;
 		}
 
 		/* Check action duplication */
-		if (++action_type_set[action_type] > 1) {
-			dr_dbg(dmn, "Duplicate action type provided\n");
+		if (++action_type_set[action_type] > max_actions_type) {
+			dr_dbg(dmn, "Action type %d supports only max %d time(s)\n",
+			       action_type, max_actions_type);
 			goto out_invalid_arg;
 		}
 
@@ -1635,6 +1687,11 @@ struct mlx5dv_dr_action
 	action->vport.caps = vport_cap;
 
 	return action;
+}
+
+struct mlx5dv_dr_action *mlx5dv_dr_action_create_pop_vlan(void)
+{
+	return dr_action_create_generic(DR_ACTION_TYP_POP_VLAN);
 }
 
 int mlx5dv_dr_action_destroy(struct mlx5dv_dr_action *action)

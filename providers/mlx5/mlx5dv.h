@@ -1467,6 +1467,8 @@ int mlx5dv_dr_action_modify_flow_meter(struct mlx5dv_dr_action *action,
 				       struct mlx5dv_dr_flow_meter_attr *attr,
 				       __be64 modify_field_select);
 
+struct mlx5dv_dr_action *mlx5dv_dr_action_create_pop_vlan(void);
+
 int mlx5dv_dr_action_destroy(struct mlx5dv_dr_action *action);
 #ifdef __cplusplus
 }

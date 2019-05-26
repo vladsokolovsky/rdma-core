@@ -111,4 +111,5 @@ MLX5_OFED_4.6.3 {
 	global:
 		mlx5dv_dr_action_create_flow_meter;
 		mlx5dv_dr_action_modify_flow_meter;
+		mlx5dv_dr_action_create_pop_vlan;
 } MLX5_1.10;
