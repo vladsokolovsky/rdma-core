@@ -139,6 +139,7 @@ enum dr_ste_tunl_action {
 };
 
 enum dr_ste_action_type {
+	DR_STE_ACTION_TYPE_PUSH_VLAN	= 1,
 	DR_STE_ACTION_TYPE_ENCAP_L3	= 3,
 	DR_STE_ACTION_TYPE_ENCAP	= 4,
 };
@@ -213,6 +214,18 @@ void dr_ste_set_counter_id(uint8_t *hw_ste_p, uint32_t ctr_id)
 void dr_ste_set_go_back_bit(uint8_t *hw_ste_p)
 {
 	DR_STE_SET(sx_transmit, hw_ste_p, go_back, 1);
+}
+
+void dr_ste_set_tx_push_vlan(uint8_t *hw_ste_p, uint32_t vlan_hdr, bool go_back)
+{
+	DR_STE_SET(sx_transmit, hw_ste_p, action_type,
+		   DR_STE_ACTION_TYPE_PUSH_VLAN);
+	DR_STE_SET(sx_transmit, hw_ste_p, encap_pointer_vlan_data, vlan_hdr);
+	/* Due to HW limitation we need to set this bit, otherwise reforamt +
+	 * push vlan will not work.
+	 */
+	if (go_back)
+		dr_ste_set_go_back_bit(hw_ste_p);
 }
 
 void dr_ste_set_tx_encap(void *hw_ste_p, uint32_t reformat_id, int size, bool encap_l3)

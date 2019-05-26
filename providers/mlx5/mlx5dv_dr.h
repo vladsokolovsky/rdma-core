@@ -182,6 +182,7 @@ enum dr_action_type {
 	DR_ACTION_TYP_METER,
 	DR_ACTION_TYP_VPORT,
 	DR_ACTION_TYP_POP_VLAN,
+	DR_ACTION_TYP_PUSH_VLAN,
 	DR_ACTION_TYP_MAX,
 };
 
@@ -316,6 +317,8 @@ void dr_ste_set_tx_encap(void *hw_ste_p, uint32_t reformat_id, int size, bool en
 void dr_ste_set_rx_decap(uint8_t *hw_ste_p);
 void dr_ste_set_rx_decap_l3(uint8_t *hw_ste_p, bool vlan);
 void dr_ste_set_rx_pop_vlan(uint8_t *hw_ste_p);
+void dr_ste_set_tx_push_vlan(uint8_t *hw_ste_p, uint32_t vlan_tpid_pcp_dei_vid,
+			     bool go_back);
 void dr_ste_set_entry_type(uint8_t *hw_ste_p, uint8_t entry_type);
 uint8_t dr_ste_get_entry_type(uint8_t *hw_ste_p);
 void dr_ste_set_rewrite_actions(uint8_t *hw_ste_p, uint16_t num_of_actions,
@@ -727,6 +730,9 @@ struct mlx5dv_dr_action {
 			struct dr_devx_vport_cap	*caps;
 			uint32_t			num;
 		} vport;
+		struct {
+			uint32_t	vlan_hdr; /* tpid_pcp_dei_vid */
+		} push_vlan;
 		struct ibv_qp		*qp;
 		struct mlx5dv_devx_obj	*devx_obj;
 		uint32_t		flow_tag;

@@ -1,0 +1,4 @@
+sep=;
+Change-Id=Ie43b82811cb665ba06eae5340585c122b108eab7; subject=mlx5: Set go_back bit; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I4944025b1f32670bace34aa880a48c59700bf50d; subject=mlx5: Add support to multiple pop vlan actions; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I92443c649d2638c615d6bf07774df6d975a6bfab; subject=mlx5: Add support to multiple push vlan actions; feature=sw_steering; upstream_status=in_progress; general=;

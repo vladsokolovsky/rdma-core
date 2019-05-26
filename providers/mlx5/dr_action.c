@@ -121,6 +121,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 		},
 		[DR_ACTION_STATE_REFORMAT] = {
 			[DR_ACTION_TYP_FT]		= DR_ACTION_STATE_TERM,
@@ -133,6 +134,15 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+		},
+		[DR_ACTION_STATE_MODIFY_VLAN] = {
+			[DR_ACTION_TYP_FT]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
 		},
 		[DR_ACTION_STATE_NON_TERM] = {
 			[DR_ACTION_TYP_DROP]		= DR_ACTION_STATE_TERM,
@@ -142,6 +152,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_MODIFY_HDR]	= DR_ACTION_STATE_MODIFY_HDR,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 		},
 		[DR_ACTION_STATE_TERM] = {
 			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_TERM,
@@ -205,6 +216,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_REFORMAT] = {
@@ -219,6 +231,16 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
+		},
+		[DR_ACTION_STATE_MODIFY_VLAN] = {
+			[DR_ACTION_TYP_FT]		= DR_ACTION_STATE_TERM,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_CTR]		= DR_ACTION_STATE_MODIFY_VLAN,
+			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_NON_TERM] = {
@@ -229,6 +251,7 @@ static const enum dr_action_valid_state next_action_state[DR_ACTION_DOMAIN_MAX]
 			[DR_ACTION_TYP_METER]		= DR_ACTION_STATE_TERM,
 			[DR_ACTION_TYP_L2_TO_TNL_L2]	= DR_ACTION_STATE_REFORMAT,
 			[DR_ACTION_TYP_L2_TO_TNL_L3]	= DR_ACTION_STATE_REFORMAT,
+			[DR_ACTION_TYP_PUSH_VLAN]	= DR_ACTION_STATE_MODIFY_VLAN,
 			[DR_ACTION_TYP_VPORT]		= DR_ACTION_STATE_TERM,
 		},
 		[DR_ACTION_STATE_TERM] = {
@@ -370,6 +393,7 @@ static const struct dr_action_modify_field_conv dr_action_conv_arr[] = {
 #define MAX_VLANS 2
 struct dr_action_vlan_info {
 	int count;
+	uint32_t headers[MAX_VLANS];
 };
 
 struct dr_action_apply_attr {
@@ -439,6 +463,9 @@ static void dr_actions_apply_tx(struct mlx5dv_dr_domain *dmn,
 				struct dr_action_apply_attr *attr,
 				uint32_t *added_stes)
 {
+	bool encap = action_type_set[DR_ACTION_TYP_L2_TO_TNL_L2] ||
+		action_type_set[DR_ACTION_TYP_L2_TO_TNL_L3];
+
 	/* We want to make sure the modify header comes before L2
 	 * encapsulation. The reason for that is that we support
 	 * modify headers for outer headers only
@@ -450,13 +477,28 @@ static void dr_actions_apply_tx(struct mlx5dv_dr_domain *dmn,
 					   attr->modify_index);
 	}
 
-	if (action_type_set[DR_ACTION_TYP_L2_TO_TNL_L2] ||
-	    action_type_set[DR_ACTION_TYP_L2_TO_TNL_L3]) {
+	if (action_type_set[DR_ACTION_TYP_PUSH_VLAN]) {
+		int i;
+
+		for (i = 0; i < attr->vlans.count; i++) {
+			if (i || action_type_set[DR_ACTION_TYP_MODIFY_HDR])
+				dr_actions_init_next_ste(&last_ste,
+							 added_stes,
+							 DR_STE_TYPE_TX,
+							 attr->gvmi);
+
+			dr_ste_set_tx_push_vlan(last_ste, attr->vlans.headers[i],
+						encap);
+		}
+	}
+
+	if (encap) {
 		/* Modify header and encapsulation require a different STEs.
 		 * Since modify header STE format doesn't support encapsulation
 		 * tunneling_action.
 		 */
-		if (action_type_set[DR_ACTION_TYP_MODIFY_HDR])
+		if (action_type_set[DR_ACTION_TYP_MODIFY_HDR] ||
+		    action_type_set[DR_ACTION_TYP_PUSH_VLAN])
 			dr_actions_init_next_ste(&last_ste,
 						 added_stes,
 						 DR_STE_TYPE_TX,
@@ -723,6 +765,15 @@ int dr_actions_build_ste_arr(struct mlx5dv_dr_matcher *matcher,
 			max_actions_type = MAX_VLANS;
 			attr.vlans.count++;
 			break;
+		case DR_ACTION_TYP_PUSH_VLAN:
+			max_actions_type = MAX_VLANS;
+			if (attr.vlans.count == MAX_VLANS) {
+				errno = ENOTSUP;
+				return ENOTSUP;
+			}
+
+			attr.vlans.headers[attr.vlans.count++] = action->push_vlan.vlan_hdr;
+			break;
 		default:
 			goto out_invalid_arg;
 		}
@@ -813,6 +864,7 @@ int dr_actions_build_attr(struct mlx5dv_dr_matcher *matcher,
 	return 0;
 }
 
+#define CVLAN_ETHERTYPE 0x8100
 #define SVLAN_ETHERTYPE 0x88a8
 #define HDR_LEN_L2_ONLY 14
 #define HDR_LEN_L2_VLAN 18
@@ -1141,6 +1193,27 @@ dr_action_create_reformat_action(struct mlx5dv_dr_domain *dmn,
 		errno = ENOTSUP;
 		return errno;
 	}
+}
+
+struct mlx5dv_dr_action *mlx5dv_dr_action_create_push_vlan(struct mlx5dv_dr_domain *dmn,
+							   __be32 vlan_hdr)
+{
+	uint32_t vlan_hdr_h = be32toh(vlan_hdr);
+	uint16_t ethertype = vlan_hdr_h >> 16;
+	struct mlx5dv_dr_action *action;
+
+	if (ethertype != SVLAN_ETHERTYPE && ethertype != CVLAN_ETHERTYPE) {
+		dr_dbg(dmn, "Invalid vlan ethertype\n");
+		errno = EINVAL;
+		return NULL;
+	}
+
+	action = dr_action_create_generic(DR_ACTION_TYP_PUSH_VLAN);
+	if (!action)
+		return NULL;
+
+	action->push_vlan.vlan_hdr = vlan_hdr_h;
+	return action;
 }
 
 struct mlx5dv_dr_action *
