@@ -106,3 +106,9 @@ MLX5_1.10 {
 		mlx5dv_dr_table_destroy;
 		mlx5dv_qp_ex_from_ibv_qp_ex;
 } MLX5_1.9;
+
+MLX5_OFED_4.6.3 {
+	global:
+		mlx5dv_dr_action_create_flow_meter;
+		mlx5dv_dr_action_modify_flow_meter;
+} MLX5_1.10;

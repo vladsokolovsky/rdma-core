@@ -309,6 +309,92 @@ struct mlx5dv_devx_obj *dr_devx_create_reformat_ctx(struct ibv_context *ctx,
 	return obj;
 }
 
+struct mlx5dv_devx_obj *dr_devx_create_meter(struct ibv_context *ctx,
+					     uint8_t active,
+					     uint8_t reg_c_index,
+					     uint8_t dest_table_type,
+					     uint32_t dest_table_id,
+					     void *meter_param_data,
+					     size_t meter_param_sz)
+{
+	uint32_t out[DEVX_ST_SZ_DW(general_obj_out_cmd_hdr)] = {0};
+	uint32_t in[DEVX_ST_SZ_DW(create_flow_meter_in)] = {0};
+	void *attr;
+
+	attr = DEVX_ADDR_OF(create_flow_meter_in, in, hdr);
+	DEVX_SET(general_obj_in_cmd_hdr,
+		 attr, opcode, MLX5_CMD_OP_CREATE_GENERAL_OBJECT);
+	DEVX_SET(general_obj_in_cmd_hdr,
+		 attr, obj_type, MLX5_OBJ_TYPE_FLOW_METER);
+
+	attr = DEVX_ADDR_OF(create_flow_meter_in, in, meter);
+	DEVX_SET64(flow_meter, attr, modify_field_select, 0);
+	DEVX_SET(flow_meter, attr, active, active);
+	DEVX_SET(flow_meter, attr, return_reg_id, reg_c_index);
+	DEVX_SET(flow_meter, attr, table_type, dest_table_type);
+	DEVX_SET(flow_meter, attr, destination_table_id, dest_table_id);
+
+	attr = DEVX_ADDR_OF(flow_meter, attr, flow_meter_params);
+	memcpy(attr, meter_param_data, meter_param_sz);
+
+	return mlx5dv_devx_obj_create(ctx, in, sizeof(in), out, sizeof(out));
+}
+
+int dr_devx_query_meter(struct mlx5dv_devx_obj *obj, uint64_t *rx_icm_addr,
+			uint64_t *tx_icm_addr)
+{
+	uint32_t in[DEVX_ST_SZ_DW(general_obj_out_cmd_hdr)] = {};
+	uint32_t out[DEVX_ST_SZ_DW(query_flow_meter_out)] = {};
+	void *attr;
+	int ret;
+
+	DEVX_SET(general_obj_in_cmd_hdr, in, opcode, MLX5_CMD_OP_QUERY_GENERAL_OBJECT);
+	DEVX_SET(general_obj_in_cmd_hdr, in, obj_type, MLX5_OBJ_TYPE_FLOW_METER);
+	DEVX_SET(general_obj_in_cmd_hdr, in, obj_id, obj->object_id);
+
+	ret = mlx5dv_devx_obj_query(obj, in, sizeof(in), out, sizeof(out));
+	if (ret) {
+		dr_dbg_ctx(obj->context, "Failed to query flow meter id %u\n",
+			   obj->object_id);
+		return ret;
+	}
+
+	attr = DEVX_ADDR_OF(query_flow_meter_out, out, obj);
+	*rx_icm_addr = DEVX_GET64(flow_meter, attr, sw_steering_icm_address_rx);
+	*tx_icm_addr = DEVX_GET64(flow_meter, attr, sw_steering_icm_address_tx);
+
+	return 0;
+}
+
+int dr_devx_modify_meter(struct mlx5dv_devx_obj *obj,
+			 void *meter_param_data,
+			 size_t meter_param_sz,
+			 __be64 modify_bits,
+			 uint8_t active)
+{
+	uint32_t out[DEVX_ST_SZ_DW(general_obj_out_cmd_hdr)] = {0};
+	uint32_t in[DEVX_ST_SZ_DW(create_flow_meter_in)] = {0};
+	void *attr;
+
+	attr = DEVX_ADDR_OF(create_flow_meter_in, in, hdr);
+	DEVX_SET(general_obj_in_cmd_hdr,
+		 attr, opcode, MLX5_CMD_OP_MODIFY_GENERAL_OBJECT);
+	DEVX_SET(general_obj_in_cmd_hdr,
+		 attr, obj_type, MLX5_OBJ_TYPE_FLOW_METER);
+	DEVX_SET(general_obj_in_cmd_hdr, in, obj_id, obj->object_id);
+
+	attr = DEVX_ADDR_OF(create_flow_meter_in, in, meter);
+	memcpy(DEVX_ADDR_OF(flow_meter, attr, modify_field_select),
+	       &modify_bits, sizeof(modify_bits));
+
+	DEVX_SET(flow_meter, attr, active, active);
+
+	attr = DEVX_ADDR_OF(flow_meter, attr, flow_meter_params);
+	memcpy(attr, meter_param_data, meter_param_sz);
+
+	return mlx5dv_devx_obj_modify(obj, in, sizeof(in), out, sizeof(out));
+}
+
 struct mlx5dv_devx_obj *dr_devx_create_qp(struct ibv_context *ctx,
 					  struct dr_devx_qp_create_attr *attr)
 {

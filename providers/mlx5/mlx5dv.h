@@ -1452,6 +1452,21 @@ mlx5dv_dr_action_create_modify_header(struct mlx5dv_dr_domain *domain,
 				      size_t actions_sz,
 				      __be64 actions[]);
 
+struct mlx5dv_dr_flow_meter_attr {
+	struct mlx5dv_dr_table	*next_table;
+	uint8_t			active;
+	uint8_t			reg_c_index;
+	size_t			flow_meter_parameter_sz;
+	void			*flow_meter_parameter;
+};
+
+struct mlx5dv_dr_action *
+mlx5dv_dr_action_create_flow_meter(struct mlx5dv_dr_flow_meter_attr *attr);
+
+int mlx5dv_dr_action_modify_flow_meter(struct mlx5dv_dr_action *action,
+				       struct mlx5dv_dr_flow_meter_attr *attr,
+				       __be64 modify_field_select);
+
 int mlx5dv_dr_action_destroy(struct mlx5dv_dr_action *action);
 #ifdef __cplusplus
 }

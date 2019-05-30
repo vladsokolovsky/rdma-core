@@ -10,3 +10,6 @@ Change-Id=I028ce4dd4635d5fe47da01362ea53817656c458d; subject=mlx5: Expose steeri
 Change-Id=I3f493b64ce4e6c31128da88e8dad22cbc1b0123d; subject=mlx5: Expose steering matcher functionality; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=Ie2a8e03b1efb1e358b74307583d21429ad4da9ec; subject=mlx5: Expose steering action functionality; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=I63289dc61188e12088ad9d16889d1e48e68c93e6; subject=mlx5: Expose the direct rules functionality to applications; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I9739364b7dc476484c033c572200d9446c9f00b2; subject=mlx5: Remove source port enforment for mtaching; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I5c5fb63173e0817adbcda0856ab1ef73ce6212f9; subject=mlx5: Add modify VLAN support for modify header; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=If3252a178ef11dae704fc8b7666b3667eb99c4cd; subject=mlx5: Meter action support; feature=sw_steering; upstream_status=in_progress; general=;

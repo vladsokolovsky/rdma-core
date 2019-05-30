@@ -1694,6 +1694,68 @@ struct mlx5_ifc_general_obj_out_cmd_hdr_bits {
 	u8         reserved_at_60[0x20];
 };
 
+struct mlx5_ifc_flow_meter_parameters_bits {
+	u8         valid[0x1];
+	u8         bucket_overflow[0x1];
+	u8         start_color[0x2];
+	u8         both_buckets_on_green[0x1];
+	u8         byte_token_ratio[0x3];
+	u8         meter_mode[0x2];
+	u8         reserved_at_a[0x16];
+
+	u8         reserved_at_20[0x20];
+
+	u8         reserved_at_40[0x3];
+	u8         cbs_exponent[0x5];
+	u8         cbs_mantissa[0x8];
+	u8         reserved_at_50[0x3];
+	u8         cir_exponent[0x5];
+	u8         cir_mantissa[0x8];
+
+	u8         reserved_at_60[0x20];
+
+	u8         reserved_at_80[0x3];
+	u8         ebs_exponent[0x5];
+	u8         ebs_mantissa[0x8];
+	u8         reserved_at_90[0x3];
+	u8         eir_exponent[0x5];
+	u8         eir_mantissa[0x8];
+
+	u8         reserved_at_a0[0x60];
+};
+
+struct mlx5_ifc_flow_meter_bits {
+	u8         modify_field_select[0x40];
+
+	u8         active[0x1];
+	u8         reserved_at_41[0x3];
+	u8         return_reg_id[0x4];
+	u8         table_type[0x8];
+	u8         reserved_at_50[0x10];
+
+	u8         reserved_at_60[0x8];
+	u8         destination_table_id[0x18];
+
+	u8         reserved_at_80[0x80];
+
+	struct mlx5_ifc_flow_meter_parameters_bits flow_meter_params;
+
+	u8         reserved_at_180[0x180];
+
+	u8         sw_steering_icm_address_rx[0x40];
+	u8         sw_steering_icm_address_tx[0x40];
+};
+
+struct mlx5_ifc_create_flow_meter_in_bits {
+	struct mlx5_ifc_general_obj_in_cmd_hdr_bits   hdr;
+	struct mlx5_ifc_flow_meter_bits               meter;
+};
+
+struct mlx5_ifc_query_flow_meter_out_bits {
+	struct mlx5_ifc_general_obj_out_cmd_hdr_bits   hdr;
+	struct mlx5_ifc_flow_meter_bits                obj;
+};
+
 struct mlx5_ifc_esw_vport_context_bits {
 	u8         reserved_at_0[0x3];
 	u8         vport_svlan_strip[0x1];
