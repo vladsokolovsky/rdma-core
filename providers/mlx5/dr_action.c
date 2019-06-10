@@ -1401,7 +1401,7 @@ static int dr_action_create_modify_action(struct mlx5dv_dr_domain *dmn,
 	int ret;
 
 	num_sw_actions = actions_sz / DR_MODIFY_ACTION_SIZE;
-	max_hw_actions = dr_icm_pool_chunk_size_to_entries(DR_CHUNK_SIZE_8);
+	max_hw_actions = dr_icm_pool_chunk_size_to_entries(DR_CHUNK_SIZE_16);
 
 	if (num_sw_actions > max_hw_actions) {
 		dr_dbg(dmn, "Max number of actions %d exceeds limit %d\n",
@@ -1410,7 +1410,7 @@ static int dr_action_create_modify_action(struct mlx5dv_dr_domain *dmn,
 		return errno;
 	}
 
-	chunk = dr_icm_alloc_chunk(dmn->action_icm_pool, DR_CHUNK_SIZE_8);
+	chunk = dr_icm_alloc_chunk(dmn->action_icm_pool, DR_CHUNK_SIZE_16);
 	if (!chunk)
 		return errno;
 
