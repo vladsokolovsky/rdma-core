@@ -639,7 +639,10 @@ static int dr_postsend_icm_data(struct mlx5dv_dr_domain *dmn,
 
 	send_ring->tx_head++;
 	dr_fill_data_segs(send_ring, send_info);
-	dr_post_send(send_ring->qp, send_info);
+
+	/* This is a temporary W/A since fatal device can happen at any time */
+	if (!dr_is_device_fatal(dmn))
+		dr_post_send(send_ring->qp, send_info);
 
 	return 0;
 }
