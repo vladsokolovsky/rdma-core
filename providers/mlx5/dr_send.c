@@ -1031,6 +1031,9 @@ int dr_send_ring_force_drain(struct mlx5dv_dr_domain *dmn)
 		ret = dr_postsend_icm_data(dmn, &send_info);
 		if (ret)
 			return ret;
+		/* clear flags bits for read/write */
+		send_info.read.send_flags = 0;
+		send_info.write.send_flags = 0;
 	}
 
 	ret = dr_handle_pending_wc(dmn, send_ring);
