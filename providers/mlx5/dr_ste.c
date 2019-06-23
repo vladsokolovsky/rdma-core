@@ -209,6 +209,11 @@ void dr_ste_set_counter_id(uint8_t *hw_ste_p, uint32_t ctr_id)
 	DR_STE_SET(rx_steering_mult, hw_ste_p, counter_trigger_23_16, ctr_id >> 16);
 }
 
+void dr_ste_set_go_back_bit(uint8_t *hw_ste_p)
+{
+	DR_STE_SET(sx_transmit, hw_ste_p, go_back, 1);
+}
+
 void dr_ste_set_tx_encap(void *hw_ste_p, uint32_t reformat_id, int size, bool encap_l3)
 {
 	DR_STE_SET(sx_transmit, hw_ste_p, action_type,

@@ -403,7 +403,8 @@ static inline void dr_actions_init_next_ste(uint8_t **last_ste,
 	dr_ste_init(*last_ste, DR_STE_LU_TYPE_DONT_CARE, entry_type, gvmi);
 }
 
-static void dr_actions_apply_tx(uint8_t *action_type_set,
+static void dr_actions_apply_tx(struct mlx5dv_dr_domain *dmn,
+				uint8_t *action_type_set,
 				uint8_t *last_ste,
 				struct dr_action_apply_attr *attr,
 				uint32_t *added_stes)
@@ -435,6 +436,13 @@ static void dr_actions_apply_tx(uint8_t *action_type_set,
 				    attr->reformat_id,
 				    attr->reformat_size,
 				    action_type_set[DR_ACTION_TYP_L2_TO_TNL_L3]);
+		/* Whenever prio_tag_required enabled, we can be sure that the
+		 * previous table (ACL) already push vlan to our packet,
+		 * And due to HW limitation we need to set this bit, otherwise
+		 *  push vlan + reformat will not work.
+		 */
+		if (dmn->info.caps.prio_tag_required)
+			dr_ste_set_go_back_bit(last_ste);
 	}
 
 	if (action_type_set[DR_ACTION_TYP_CTR])
@@ -488,7 +496,8 @@ static void dr_actions_apply_rx(uint8_t *action_type_set,
 /* Apply the actions on the rule STE array starting from the last_ste.
  * Actions might require more than one STE, new_num_stes will return
  * the new size of the STEs array, rule with actions. */
-static void dr_actions_apply(enum dr_ste_entry_type ste_type,
+static void dr_actions_apply(struct mlx5dv_dr_domain *dmn,
+			     enum dr_ste_entry_type ste_type,
 			     uint8_t *action_type_set,
 			     uint8_t *last_ste,
 			     struct dr_action_apply_attr *attr,
@@ -499,7 +508,7 @@ static void dr_actions_apply(enum dr_ste_entry_type ste_type,
 	if (ste_type == DR_STE_TYPE_RX)
 		dr_actions_apply_rx(action_type_set, last_ste, attr, &added_stes);
 	else
-		dr_actions_apply_tx(action_type_set, last_ste, attr, &added_stes);
+		dr_actions_apply_tx(dmn, action_type_set, last_ste, attr, &added_stes);
 
 	last_ste += added_stes * DR_STE_SIZE;
 	*new_num_stes += added_stes;
@@ -685,7 +694,8 @@ int dr_actions_build_ste_arr(struct mlx5dv_dr_matcher *matcher,
 	*new_hw_ste_arr_sz = nic_matcher->num_of_builders;
 	last_ste = ste_arr + DR_STE_SIZE * (nic_matcher->num_of_builders - 1);
 
-	dr_actions_apply(nic_dmn->ste_type,
+	dr_actions_apply(dmn,
+			 nic_dmn->ste_type,
 			 action_type_set,
 			 last_ste,
 			 &attr,

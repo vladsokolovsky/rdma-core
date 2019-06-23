@@ -318,6 +318,7 @@ void dr_ste_set_entry_type(uint8_t *hw_ste_p, uint8_t entry_type);
 uint8_t dr_ste_get_entry_type(uint8_t *hw_ste_p);
 void dr_ste_set_rewrite_actions(uint8_t *hw_ste_p, uint16_t num_of_actions,
 				uint32_t re_write_index);
+void dr_ste_set_go_back_bit(uint8_t *hw_ste_p);
 uint64_t dr_ste_get_icm_addr(struct dr_ste *ste);
 uint64_t dr_ste_get_mr_addr(struct dr_ste *ste);
 struct list_head *dr_ste_get_miss_list(struct dr_ste *ste);
@@ -600,6 +601,7 @@ struct dr_devx_caps {
 	uint32_t			num_vports;
 	struct dr_devx_vport_cap	*vports_caps;
 	struct dr_devx_vport_cap	esw_manager_vport_caps;
+	bool				prio_tag_required;
 };
 
 struct dr_domain_rx_tx {
