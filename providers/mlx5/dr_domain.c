@@ -102,8 +102,9 @@ static void dr_free_resources(struct mlx5dv_dr_domain *dmn)
 }
 
 static int dr_query_vport_cap(struct ibv_context *ctx, uint16_t vport_number,
-			      bool other_vport, struct dr_devx_vport_cap *cap)
+			      struct dr_devx_vport_cap *cap)
 {
+	bool other_vport = vport_number ? true : false;
 	int ret;
 
 	ret = dr_devx_query_esw_vport_context(ctx, other_vport, vport_number,
@@ -140,17 +141,10 @@ static int dr_domain_query_fdb_caps(struct ibv_context *ctx,
 
 	/* Query vports */
 	for (i = 0; i < num_vports; i++) {
-		ret = dr_query_vport_cap(ctx, i, true,
-					 &dmn->info.caps.vports_caps[i]);
+		ret = dr_query_vport_cap(ctx, i, &dmn->info.caps.vports_caps[i]);
 		if (ret)
 			goto err;
 	}
-
-	/* Query esw manager */
-	ret = dr_query_vport_cap(ctx, 0, false,
-				 &dmn->info.caps.esw_manager_vport_caps);
-	if (ret)
-		goto err;
 
 	/* Query uplink */
 	ret = dr_devx_query_esw_caps(ctx, &esw_caps);
@@ -234,10 +228,13 @@ static int dr_domain_caps_init(struct ibv_context *ctx,
 
 		dmn->info.rx.ste_type = DR_STE_TYPE_RX;
 		dmn->info.tx.ste_type = DR_STE_TYPE_TX;
+		vport_cap = dr_get_vport_cap(&dmn->info.caps, 0);
+		if (!vport_cap) {
+			dr_dbg(dmn, "Failed to get vport 0 caps\n");
+			return errno;
+		}
 
-		vport_cap = &dmn->info.caps.esw_manager_vport_caps;
 		dmn->info.rx.default_icm_addr = vport_cap->icm_address_rx;
-
 		vport_cap = dr_get_vport_cap(&dmn->info.caps, WIRE_PORT);
 		if (!vport_cap) {
 			dr_dbg(dmn, "Failed to get vport WIRE caps\n");

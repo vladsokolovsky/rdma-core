@@ -14,3 +14,4 @@ Change-Id=I9739364b7dc476484c033c572200d9446c9f00b2; subject=mlx5: Remove source
 Change-Id=I5c5fb63173e0817adbcda0856ab1ef73ce6212f9; subject=mlx5: Add modify VLAN support for modify header; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=If3252a178ef11dae704fc8b7666b3667eb99c4cd; subject=mlx5: Meter action support; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=I05e9ae48dc16dd81ae4286b2b789e716be22856d; subject=mlx5: W/A Skip dr_post_send on fatal device; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I04dadaad393a1e04e19034f0f5dfd158b180b141; subject=Revert "mlx5: Don't use vport 0 as eswitch manager blindly"; feature=sw_steering; upstream_status=ignore; general=;
