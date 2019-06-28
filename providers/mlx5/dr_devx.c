@@ -91,6 +91,31 @@ int dr_devx_query_gvmi(struct ibv_context *ctx, bool other_vport,
 	return 0;
 }
 
+int dr_devx_query_esw_func(struct ibv_context *ctx,
+			   bool *host_pf_vhca_id_valid,
+			   uint16_t *host_pf_vhca_id)
+{
+	uint32_t out[DEVX_ST_SZ_DW(query_esw_functions_out)] = {};
+	uint32_t in[DEVX_ST_SZ_DW(query_esw_functions_in)] = {};
+	int err;
+
+	DEVX_SET(query_esw_functions_in, in, opcode,
+		 MLX5_CMD_OP_QUERY_ESW_FUNCTIONS);
+
+	err = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
+	if (err) {
+		dr_dbg_ctx(ctx, "Query esw func failed %d\n", err);
+		return err;
+	}
+
+	*host_pf_vhca_id_valid = DEVX_GET(query_esw_functions_out, out,
+					  host_params_context.host_pf_vhca_id_valid);
+
+	*host_pf_vhca_id = DEVX_GET(query_esw_functions_out, out,
+				    host_params_context.host_pf_vhca_id);
+	return 0;
+}
+
 int dr_devx_query_esw_caps(struct ibv_context *ctx, struct dr_esw_caps *caps)
 {
 	uint32_t out[DEVX_ST_SZ_DW(query_hca_cap_out)] = {};

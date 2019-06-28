@@ -47,6 +47,7 @@ enum {
 	MLX5_CMD_OP_INIT2RTR_QP = 0x503,
 	MLX5_CMD_OP_RTR2RTS_QP = 0x504,
 	MLX5_CMD_OP_RTS2RTS_QP = 0x505,
+	MLX5_CMD_OP_QUERY_ESW_FUNCTIONS = 0x740,
 	MLX5_CMD_OP_QUERY_ESW_VPORT_CONTEXT = 0x752,
 	MLX5_CMD_OP_QUERY_ROCE_ADDRESS = 0x760,
 	MLX5_CMD_OP_CREATE_FLOW_TABLE = 0x930,
@@ -2174,6 +2175,49 @@ struct mlx5_ifc_dr_action_hw_set_bits {
 	u8         reserved_at_18[0x3];
 	u8         destination_length[0x5];
 	u8         inline_data[0x20];
+};
+
+struct mlx5_ifc_host_params_context_bits {
+	u8         host_number[0x8];
+	u8         reserved_at_8[0x6];
+	u8         host_pf_vhca_id_valid[0x1];
+	u8         host_pf_disabled[0x1];
+	u8         host_num_of_vfs[0x10];
+
+	u8         host_total_vfs[0x10];
+	u8         host_pci_bus[0x10];
+
+	u8         host_pf_vhca_id[0x10];
+	u8         host_pci_device[0x10];
+
+	u8         reserved_at_60[0x10];
+	u8         host_pci_function[0x10];
+
+	u8         reserved_at_80[0x180];
+};
+
+struct mlx5_ifc_query_esw_functions_in_bits {
+	u8         opcode[0x10];
+	u8         reserved_at_10[0x10];
+
+	u8         reserved_at_20[0x10];
+	u8         op_mod[0x10];
+
+	u8         reserved_at_40[0x40];
+};
+
+struct mlx5_ifc_query_esw_functions_out_bits {
+	u8         status[0x8];
+	u8         reserved_at_8[0x18];
+
+	u8         syndrome[0x20];
+
+	u8         reserved_at_40[0x40];
+
+	struct mlx5_ifc_host_params_context_bits host_params_context;
+
+	u8         reserved_at_280[0x180];
+	u8         host_sf_enable[0][0x40];
 };
 
 enum {

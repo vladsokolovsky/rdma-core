@@ -841,6 +841,9 @@ int dr_devx_query_gvmi(struct ibv_context *ctx,
 		       bool other_vport, uint16_t vport_number, uint16_t *gvmi);
 int dr_devx_query_esw_caps(struct ibv_context *ctx,
 			   struct dr_esw_caps *caps);
+int dr_devx_query_esw_func(struct ibv_context *ctx,
+			   bool *host_pf_vhca_id_valid,
+			   uint16_t *host_pf_vhca_id);
 int dr_devx_sync_steering(struct ibv_context *ctx);
 struct mlx5dv_devx_obj *dr_devx_create_flow_table(struct ibv_context *ctx,
 						  uint32_t table_type,
