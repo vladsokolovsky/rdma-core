@@ -196,10 +196,6 @@ static int dr_domain_caps_init(struct ibv_context *ctx,
 		 */
 		return 0;
 
-	ret = dr_domain_query_fdb_caps(ctx, dmn);
-	if (ret)
-		return ret;
-
 	switch (dmn->type) {
 	case MLX5DV_DR_DOMAIN_TYPE_NIC_RX:
 		if (!dmn->info.caps.rx_sw_owner)
@@ -220,6 +216,10 @@ static int dr_domain_caps_init(struct ibv_context *ctx,
 		dmn->info.tx.drop_icm_addr = dmn->info.caps.nic_tx_drop_address;
 		break;
 	case MLX5DV_DR_DOMAIN_TYPE_FDB:
+		ret = dr_domain_query_fdb_caps(ctx, dmn);
+		if (ret)
+			return ret;
+
 		if (!dmn->info.caps.eswitch_manager)
 			return 0;
 
