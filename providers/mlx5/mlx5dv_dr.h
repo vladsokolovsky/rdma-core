@@ -606,6 +606,7 @@ struct dr_devx_caps {
 	uint32_t			num_vports;
 	struct dr_devx_vport_cap	*vports_caps;
 	bool				prio_tag_required;
+	struct dr_devx_vport_cap	esw_manager_vport_caps;
 };
 
 struct dr_domain_rx_tx {

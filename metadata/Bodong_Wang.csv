@@ -1,1 +1,3 @@
-Change-Id=I45255e296bedebc2ba57612dbf1b8756841906c1; subject=mlx5: Don't use vport 0 as eswitch manager blindly; feature=sw_steering; upstream_status=ignore; general=;
+Change-Id=I45255e296bedebc2ba57612dbf1b8756841906c1; subject=mlx5: Don't use vport 0 as eswitch manager blindly; feature=sw_steering; upstream_status=NA; general=;
+Change-Id=I0ae45d3cb7b0b905bc9f20015435f60a7b87c9d3; subject=mlx5: Support query esw functions; feature=sw_steering; upstream_status=NA; general=;
+Change-Id=Id1221eaefcf1eb6569fb599c879399878d30bbdc; subject=mlx5: Don't use vport 0 as eswitch manager blindly; feature=sw_steering; upstream_status=NA; general=;
