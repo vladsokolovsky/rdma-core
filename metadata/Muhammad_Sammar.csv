@@ -1,3 +1,4 @@
 sep=;
 Change-Id=I5598ca47b08d77cb06febc273b383d0abf95c300; subject=mlx5: Change modify header action to support 16 actions; feature=sw_steering; upstream_status=in_progress; general=;
 Change-Id=I2e2107cebe0d01c2243c84b82e40e6c856d5c973; subject=mlx5: Fix dr_domain_caps_init func; feature=sw_steering; upstream_status=in_progress; general=;
+Change-Id=I9e81b5b8e6088e8cea261cbf1ddbc0e2ea9a31bb; subject=mlx5: Query vports caps for NIC domain; feature=sw_steering; upstream_status=in_progress; general=;
