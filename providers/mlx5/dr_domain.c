@@ -138,6 +138,7 @@ static bool dr_devx_is_ecpf(struct ibv_context *ctx, struct mlx5dv_dr_domain *dm
 static int dr_domain_query_fdb_caps(struct ibv_context *ctx,
 				    struct mlx5dv_dr_domain *dmn)
 {
+	struct ibv_port_attr port_attr = {};
 	struct dr_esw_caps esw_caps = {};
 	int num_vports;
 	bool is_ecpf;
@@ -159,6 +160,11 @@ static int dr_domain_query_fdb_caps(struct ibv_context *ctx,
 
 	/* Query vports */
 	for (i = 0; i < num_vports; i++) {
+		/* Validate the port before issuing command to operate on it */
+		ret = ibv_query_port(ctx, i, &port_attr);
+		if (ret || port_attr.state == IBV_PORT_NOP)
+			continue;
+
 		ret = dr_query_vport_cap(ctx, i, i || is_ecpf,
 					 &dmn->info.caps.vports_caps[i]);
 		if (ret)
