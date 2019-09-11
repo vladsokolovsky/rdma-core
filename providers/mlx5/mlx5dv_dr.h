@@ -603,6 +603,8 @@ struct dr_devx_caps {
 	bool				rx_sw_owner;
 	bool				tx_sw_owner;
 	bool				fdb_sw_owner;
+	bool				sf;
+	uint32_t			max_sfs;
 	uint32_t			num_vports;
 	struct dr_devx_vport_cap	*vports_caps;
 	bool				prio_tag_required;
@@ -843,6 +845,7 @@ int dr_devx_query_gvmi(struct ibv_context *ctx,
 int dr_devx_query_esw_caps(struct ibv_context *ctx,
 			   struct dr_esw_caps *caps);
 int dr_devx_query_esw_func(struct ibv_context *ctx,
+			   uint16_t max_sfs,
 			   bool *host_pf_vhca_id_valid,
 			   uint16_t *host_pf_vhca_id);
 int dr_devx_sync_steering(struct ibv_context *ctx);

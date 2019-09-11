@@ -92,19 +92,28 @@ int dr_devx_query_gvmi(struct ibv_context *ctx, bool other_vport,
 }
 
 int dr_devx_query_esw_func(struct ibv_context *ctx,
+			   uint16_t max_sfs,
 			   bool *host_pf_vhca_id_valid,
 			   uint16_t *host_pf_vhca_id)
 {
-	uint32_t out[DEVX_ST_SZ_DW(query_esw_functions_out)] = {};
 	uint32_t in[DEVX_ST_SZ_DW(query_esw_functions_in)] = {};
+	size_t outsz;
+	void *out;
 	int err;
+
+	outsz = DEVX_ST_SZ_BYTES(query_esw_functions_out) +
+		align((max_sfs + 64 - 1u) / 64, sizeof(uint64_t));
+	out = malloc(outsz);
+	if (!out)
+		return -ENOMEM;
 
 	DEVX_SET(query_esw_functions_in, in, opcode,
 		 MLX5_CMD_OP_QUERY_ESW_FUNCTIONS);
 
-	err = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
+	err = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, outsz);
 	if (err) {
 		dr_dbg_ctx(ctx, "Query esw func failed %d\n", err);
+		free(out);
 		return err;
 	}
 
@@ -113,6 +122,7 @@ int dr_devx_query_esw_func(struct ibv_context *ctx,
 
 	*host_pf_vhca_id = DEVX_GET(query_esw_functions_out, out,
 				    host_params_context.host_pf_vhca_id);
+	free(out);
 	return 0;
 }
 
@@ -178,6 +188,7 @@ int dr_devx_query_device(struct ibv_context *ctx, struct dr_devx_caps *caps)
 	caps->gvmi = DEVX_GET(query_hca_cap_out, out, capability.cmd_hca_cap.vhca_id);
 	caps->flex_protocols = DEVX_GET(query_hca_cap_out, out,
 					capability.cmd_hca_cap.flex_parser_protocols);
+	caps->sf = DEVX_GET(query_hca_cap_out, out, capability.cmd_hca_cap.sf);
 
 	if (dr_matcher_supp_flex_parser_icmp_v4(caps)) {
 		caps->flex_parser_id_icmp_dw0 =
@@ -229,6 +240,22 @@ int dr_devx_query_device(struct ibv_context *ctx, struct dr_devx_caps *caps)
 	caps->max_ft_level = DEVX_GET(query_hca_cap_out, out,
 				      capability.flow_table_nic_cap.
 				      flow_table_properties_nic_receive.max_ft_level);
+
+	if (caps->sf && caps->eswitch_manager) {
+		DEVX_SET(query_hca_cap_in, in, op_mod,
+			 MLX5_SET_HCA_CAP_OP_MOD_ESW | HCA_CAP_OPMOD_GET_CUR);
+
+		err = mlx5dv_devx_general_cmd(ctx, in, sizeof(in), out, sizeof(out));
+		if (err) {
+			dr_dbg_ctx(ctx, "Query eswitch capabilities failed %d\n", err);
+			return err;
+		}
+		caps->max_sfs = 1 << DEVX_GET(query_hca_cap_out, out,
+					      capability.e_switch_cap.log_max_esw_sf);
+	} else {
+		caps->max_sfs = 0;
+	}
+
 	DEVX_SET(query_hca_cap_in, in, op_mod,
 		 MLX5_SET_HCA_CAP_OP_MOD_DEVICE_MEMORY |
 		 HCA_CAP_OPMOD_GET_CUR);

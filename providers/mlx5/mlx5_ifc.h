@@ -883,8 +883,9 @@ struct mlx5_ifc_cmd_hca_cap_bits {
 	u8         trusted_vnic_vhca[0x1];
 	u8         sw_owner_id[0x1];
 	u8         reserve_not_to_use[0x1];
-	u8         reserved_at_620[0xa0];
-	u8         reserved_at_6c0[0x8];
+	u8         reserved_at_620[0x60];
+	u8         sf[0x1];
+	u8         reserved_at_682[0x46];
 	u8         flex_parser_id_icmp_dw1[0x4];
 	u8         flex_parser_id_icmp_dw0[0x4];
 	u8         flex_parser_id_icmpv6_dw1[0x4];
@@ -975,11 +976,19 @@ struct mlx5_ifc_flow_table_eswitch_cap_bits {
 	u8      reserved_at_1900[0x6700];
 };
 
+struct mlx5_ifc_e_switch_cap_bits {
+	u8         reserved_at_0[0x4b];
+	u8         log_max_esw_sf[0x5];
+	u8         esw_sf_base_id[0x10];
+	u8         reserved_at_60[0x7a0];
+};
+
 union mlx5_ifc_hca_cap_union_bits {
 	struct mlx5_ifc_atomic_caps_bits atomic_caps;
 	struct mlx5_ifc_cmd_hca_cap_bits cmd_hca_cap;
 	struct mlx5_ifc_flow_table_nic_cap_bits flow_table_nic_cap;
 	struct mlx5_ifc_flow_table_eswitch_cap_bits flow_table_eswitch_cap;
+	struct mlx5_ifc_e_switch_cap_bits e_switch_cap;
 	struct mlx5_ifc_device_mem_cap_bits device_mem_cap;
 	u8         reserved_at_0[0x8000];
 };
@@ -1017,6 +1026,7 @@ enum {
 	MLX5_SET_HCA_CAP_OP_MOD_GENERAL_DEVICE        = 0x0 << 1,
 	MLX5_SET_HCA_CAP_OP_MOD_NIC_FLOW_TABLE        = 0x7 << 1,
 	MLX5_SET_HCA_CAP_OP_MOD_ESW_FLOW_TABLE        = 0x8 << 1,
+	MLX5_SET_HCA_CAP_OP_MOD_ESW                   = 0x9 << 1,
 	MLX5_SET_HCA_CAP_OP_MOD_DEVICE_MEMORY         = 0xf << 1,
 };
 

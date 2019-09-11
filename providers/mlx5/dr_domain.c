@@ -125,7 +125,8 @@ static bool dr_devx_is_ecpf(struct ibv_context *ctx, struct mlx5dv_dr_domain *dm
 	uint16_t host_pf_vhca_id;
 	int ret;
 
-	ret = dr_devx_query_esw_func(ctx, &host_pf_vhca_id_valid, &host_pf_vhca_id);
+	ret = dr_devx_query_esw_func(ctx, dmn->info.caps.max_sfs,
+				     &host_pf_vhca_id_valid, &host_pf_vhca_id);
 	if (!ret &&
 	    host_pf_vhca_id_valid &&
 	    host_pf_vhca_id != dmn->info.caps.gvmi)
